@@ -1,0 +1,267 @@
+FORMAT: 1A
+HOST: https://test.inbeacon.nl
+
+# inBeacon BAPI 
+Integrating inBeacon with your own local systems is possible using the inBeacon 
+Business API. The inBeacon BAPI is one of serveral API drivers you can choose from in your account. Each BAPI driver uses its own special interface definitions, for communicating with a specific system. The inBeacon BAPI is a generic driver that offers an API that you can develop against.
+
+
+# Getting started
+
+## messages and notifications
+The inBeacon BAPI supports *inbound* and *outbound* messages, always from the viewpoint of the inBeacon service. So calling the inBeacon endpoints is defined as *inbound*. If your own notification endpoint is called, this is defined as an *outbound* message. 
+
+:::note
+In order to process *outbound* messages you need to setup your own service endpoint
+:::
+
+## Configuration
+Go to [Manage->account configuration](https://console.inbeacon.nl/accmgr/settings)  to set up your interface:
+
+![](images/account_config.png)
+
+- Choose “inbeacon default API” as your BAPI driver.
+- Enter your service endpoint where the inBeacon BAPI driver can send *outbound* notifications to. (optional)
+- Enter a service username/password to be used for *outbound* messages to your service endpoint using Basic HTTP Authentication. (optional)  
+
+<aside class="notice">Note: Use a https protocol together with Basic HTTP authentication for security reasons.</aside>
+
+In addition you need your account client ID and secret to talk to the inBeacon endpoint.
+Go to [Manage->account](https://console.inbeacon.nl/accmgr) to look for the clientID and clientSecret under “developer credentials”
+
+When your developer account for inBeacon is created, you will receive a client-ID and a client-SECRET.
+You must include your client ID in all API requests. Your client ID identifies you as an inBeacon customer and enables support and quota for your application. All API requests also must include a generated unique signature that you need to calculate. These signatures are based on your client-SECRET. This client-SECRET is yours alone and unique to your client ID. 
+
+:::warning
+#### <i class="fa fa-warning"></i> Caution
+Please keep your `client-SECRET` secure. This key — though used to generate the signature — should not be passed within any requests, stored on any websites, or posted to any public forum. Anyone obtaining this signing key "in the clear" could spoof requests using your identity.
+:::
+
+## Usage Limits
+The inBeacon BAPI has the following limits in place:
+
+-  Users of demo accounts:
+    240 requests per 24 hour period.
+- Business and enterprise accounts:
+    Up to 240000 requests per 24 hour period, depending on contract.
+
+
+# Group Requests
+## Inbound requests
+> A typical BAPI request is generally of the following form:
+
+```
+https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}
+```
+Using the command line:
+```bash
+curl "https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}"
+```
+
+Inbound requests are send to the inBeacon platform. So it is inbound from inBeacons point of view.
+
+
+The inBeacon BAPI uses HTTP requests to specific URLs, passing URL parameters as arguments to the services. Generally, these services return data in the HTTP request as JSON for parsing and/or processing by your application.
+
+All inbound requests use the following service endpoint:
+
+`https://bapi.inbeacon.nl/bapi/v1`
+
+>
+
+# Authentication
+
+When using an inBeacon BAPI service, three parameters are required in addition to the standard parameters:
+
+- Your *client ID*. You must provide a client ID when accessing any of the API libraries or services. Your client ID is passed as the value of the client parameter.
+- A unique *signature*, generated using your client-SECRET. This is passed as the value of the signature parameter. More information about generating a signature can be found below, in the Digital Signatures section.
+
+[Go to your account page to get your client-ID and client-Secret](https://console.inbeacon.nl/accmgr).
+
+
+
+Example:
+
+```
+https://bapi.inbeacon.nl/bapi/v1/user/452344client=CLIENT_ID&signature=YOUR_URL_SIGNATURE
+```
+
+:::note
+It is currently possible to send BAPI requests without signature by turning the “signature required” option off for your account. (See Account settings -> Business API settings)
+However this will change in the future and signatures will become mandatory for all communication.
+:::
+
+# Group Customer resource
+These operations are available on the customer resource
+
+## Get customer by id [/bapi/v1/customers/{id}/{?client,signature}]
+Get customer information of customer {id}, which is the inBeacon internal ID
+
+
++ Parameters
+    + id: `1233` (number, required) - inBeacon customer ID
+    + client: `ID` (string, required) - Account client-id
+    + signature: `SIG` (string, required) - Message signature
+
+
+### Get customer by id [GET]
+
++ Response 200 (application/json)
+
+    + Body
+        {
+            "id": "41",
+            "device_id": "dbseed",
+            "name": "Mieke boudewijn",
+            "email": "mieke.boudewijn@gmail.com",
+        }
+
++ Response 404 (application/json)
+
+
+
+## Search customers [/bapi/v1/customers{?name,email,customerid,client,signature}]
+Search a customer by name, email and/or customerid. Multiple values combine into an AND request. May contain % to indicate wildcards.
+
++ Parameters
+    + client: `ID` (string, required) - Account client-id
+    + name: `alice` (string, optional) - Search for a customer by name
+    + email: `joe@me.com` (string, optional) - Search by email
+    + customerid: `344` (string, optional, ) - Search by customer id
+    + signature: `SIG` (string, required) - Message signature
+
+
+### Search customers [GET]
+
++ Response 200 (application/json)
+
+    + Body
+
+        [{
+            "id": "41",
+            "device_id": "dbseed",
+            "name": "Hans Vrolijk",
+            "email": "hans.vrolijk@gmail.com",
+        },
+        {
+            "id": "42",
+            "device_id": "dbseed2",
+            "name": "Hans Anders",
+            "email": "hans@gmail.com",
+        }]
++ Response 401 (application/json)
+
+## Update a customer [/bapi/v1/customers/{id}{?client,signature}]
+
+Update information of customer `id`, which is the inBeacon internal ID.
+
+
+- It is possible to remove properties by setting them to `null`.
+- It is possible to define complex properties, like arrays or objects
+
++ Parameters
+    + id: `1233` (number, required) - inBeacon customer ID
+    + client: `ID` (string, required) - Account client-id
+    + signature: `SIG` (string, required) - Message signature
+
+
+### Update a customer [PUT]
+
++ Request (application/json)
+    + Send an updated customer object, which only contains values to update or to delete. 
+    + Body
+        {
+        "friend": "Jan Paulusma"
+        }
+
++ Response 200 (application/json)
++ Response 401 (application/json)
+    + no object data found
+    + Body
+
++ Response 404 (application/json)
+    + object not found (id does not exist)
+    + Body
+
+# Group Proximity resource
+The proximity resource contains devices in a defined proximity range. This can be historic or actual.
+
+To create external digital signage or clienteling solutions, you can get the current state of all 
+current users who are in proximity of defined locations. You can use a polling mechanism and use this 
+resource at a maximum rate of 1 time(s) per 30 seconds.
+
+:::note
+It is also possible to use the actual_proximity_update notification which does not need polling. (To be defined)
+:::
+
+
+## Get actual proxmity on all locations [/bapi/v1/proximity/actual/{?client,signature}]
+Get actual proximity status of all locations
+
++ Parameters
+    + client: `ID` (string, required) - Account client-id
+    + signature: `SIG` (string, required) - Message signature
+
+
+### Get all proximity [GET]
+
++ Response 200 (application/json)
+
+    + Body
+        {
+            "id": "41",
+            "device_id": "dbseed",
+            "name": "Mieke boudewijn",
+            "email": "mieke.boudewijn@gmail.com",
+        }
+
++ Response 404 (application/json)
+
+## Get actual proxmity on location [/bapi/v1/proximity/actual/{locationId}{?client,signature}]
+Get actual proximity status of a single location with `locationId`
+
++ Parameters
+    + locationId: `34` (number, required) - inBeacon location id
+    + client: `ID` (string, required) - Account client-id
+    + signature: `SIG` (string, required) - Message signature
+
+### Get location proximity [GET]
+
++ Response 200 (application/json)
+
+    + Body
+        [
+            {
+                "id": "20397",
+                "customer_id": "36212",
+                "customer_name": "Dwight Schulz",
+                "customer_email": "dwight@ateam.com",
+                "customer_gender": "male",
+                "customer_data": [],
+                "timein": "16:10",
+                "timein_timestamp": "1433427053",
+                "location_id": "134",
+                "location_name": "WVS Kalverstraat",
+                "device_os": "ios",
+                "device_hwcode": "iPhone6,2",
+                "device_hw": "iPhone 5s "
+            },
+            {
+                "id": "2344",
+                "customer_id": "3919",
+                "customer_name": "Dwight Schulz",
+                "customer_email": "dwight@ateam.com",
+                "customer_gender": "male",
+                "customer_data": [],
+                "timein": "16:10",
+                "timein_timestamp": "1433427053",
+                "location_id": "134",
+                "location_name": "WVS Kalverstraat",
+                "device_os": "ios",
+                "device_hwcode": "iPhone6,2",
+                "device_hw": "iPhone 5s "
+            },
+        ]
+
++ Response 404 (application/json)
+
