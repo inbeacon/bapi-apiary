@@ -1,44 +1,35 @@
 FORMAT: 1A
 HOST: https://bapi.inbeacon.nl
 
-# inBeacon BAPI 
-Welcome to the inBeacon Business API reference! This inBeacon API is based on REST.
+# inBeacon Business API 
+Welcome to the inBeacon Business API (BAPI) reference. 
 
-This documentation lists and describes the individual resources you can used to manipulate objects 
+This documentation lists and describes the individual resources you can use to manipulate objects 
 on the inBeacon Platform. 
 
-If you are new to APIs, review the info in this section.
+This inBeacon API is based on REST. If you are new to APIs, review the info in this section.
+
+Happy calling!
 
 
 # Getting started
 
 ## messages and notifications
-The inBeacon BAPI supports *inbound* and *outbound* messages, always from the viewpoint of the inBeacon service. So calling the inBeacon endpoints is defined as *inbound*. If your own notification endpoint is called, this is defined as an *outbound* message. 
+The inBeacon BAPI supports messages send to the inBeacon platform *(inbound)*, and notifications 
+send from the inBeacon platform to your system's endpoint *(outbound)*.
+
 
 >#### Note
->In order to process *outbound* messages you need to setup your own service endpoint
+>In order to process *outbound* messages you need to setup your own service endpoint. 
+>Processing of outbound notifications is optional.
 
 
 ## Configuration
-Go to [Manage->account configuration](https://console.inbeacon.nl/accmgr/settings)  to set up your interface:
-
-![](images/account_config.png)
+Go to [Manage->account configuration](https://console.inbeacon.nl/accmgr/settings)  to set up your interface
 
 - Choose “inbeacon default API” as your BAPI driver.
 - Enter your service endpoint where the inBeacon BAPI driver can send *outbound* notifications to. (optional)
 - Enter a service username/password to be used for *outbound* messages to your service endpoint using Basic HTTP Authentication. (optional)  
-
->Note: Use a https protocol together with Basic HTTP authentication for security reasons.
-
-In addition you need your account client ID and secret to talk to the inBeacon endpoint.
-Go to [Manage->account](https://console.inbeacon.nl/accmgr) to look for the clientID and clientSecret under “developer credentials”
-
-When your developer account for inBeacon is created, you will receive a client-ID and a client-SECRET.
-You must include your client ID in all API requests. Your client ID identifies you as an inBeacon customer and enables support and quota for your application. All API requests also must include a generated unique signature that you need to calculate. These signatures are based on your client-SECRET. This client-SECRET is yours alone and unique to your client ID. 
-
-
->#### Caution
->Please keep your `client-SECRET` secure. This key — though used to generate the signature — should not be passed within any requests, stored on any websites, or posted to any public forum. Anyone obtaining this signing key "in the clear" could spoof requests using your identity.
 
 
 ## Usage Limits
@@ -50,50 +41,68 @@ The inBeacon BAPI has the following limits in place:
     Up to 240000 requests per 24 hour period, depending on contract.
 
 
-# Group Requests
 ## Inbound requests
-> A typical BAPI request is generally of the following form:
-
-```
-https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}
-```
-Using the command line:
-```bash
-curl "https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}"
-```
-
-Inbound requests are send to the inBeacon platform. So it is inbound from inBeacons point of view.
-
-
-The inBeacon BAPI uses HTTP requests to specific URLs, passing URL parameters as arguments to the services. Generally, these services return data in the HTTP request as JSON for parsing and/or processing by your application.
-
 All inbound requests use the following service endpoint:
 
 `https://bapi.inbeacon.nl/bapi/v1`
 
->
+A typical BAPI request is generally of the following form:
+```
+https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}
+```
+Or, using the command line:
+```bash
+curl "https://bapi.inbeacon.nl/bapi/v1/{resource}?{parameters}"
+```
+
+These services return data in the HTTP request as JSON for parsing and/or processing by your application.
+
+## Outbound notifications
+Outbound notifications
+
+The inBeacon BAPI uses HTTP requests to your own defined endpoint.
+The outbound notification is always a POST type. The post data is a json object. 
+Data needs to be returned as JSON for parsing and/or processing by the inBeacon platform
+You can define your own endpoint for outbound notifications (see Getting started) This can be any HTTP or HTTPS endpoint
+```
+POST <your defined endpoint>?{parameters}
+```
+If you specified a user/password, this will be supplied using HTTP Basic Authentication.
+
+The outbound notification are optional. If not defined, the platform does not send outbound notifications.
+
+The Post data is a JSON object containing the service specfier and optional data:
+Post data example:
+```json
+    {
+        “service”:”triggerupdate”,
+        .. other data ..
+    }
+```
 
 # Authentication
 
-When using an inBeacon BAPI service, three parameters are required in addition to the standard parameters:
-
-- Your *client ID*. You must provide a client ID when accessing any of the API libraries or services. Your client ID is passed as the value of the client parameter.
-- A unique *signature*, generated using your client-SECRET. This is passed as the value of the signature parameter. More information about generating a signature can be found below, in the Digital Signatures section.
-
-[Go to your account page to get your client-ID and client-Secret](https://console.inbeacon.nl/accmgr).
+You need your account `client ID` and `client secret` to talk to the inBeacon endpoint.
+Go to [Manage->account](https://console.inbeacon.nl/accmgr) to look for the clientID and clientSecret under “developer credentials”
 
 
+>#### Caution
+>Please keep your `client secret` secure. This key — though used to generate the signature — should not be passed within any requests, stored on any websites, or posted to any public forum. Anyone obtaining this signing key "in the clear" could spoof requests using your identity.
+
+For authentication, two parameters are required in addition to the standard parameters:
+
+- Your `client ID`. You must provide a client ID when accessing any of the API libraries or services. Your client ID is passed as the value of the client parameter.
+- A unique `signature`, generated using your `client-SECRET`. This is passed as the value of the signature parameter. More information about generating a signature can be found below, in the Digital Signatures section.
 
 Example:
-
 ```
 https://bapi.inbeacon.nl/bapi/v1/user/452344client=CLIENT_ID&signature=YOUR_URL_SIGNATURE
 ```
 
-:::note
-It is currently possible to send BAPI requests without signature by turning the “signature required” option off for your account. (See Account settings -> Business API settings)
-However this will change in the future and signatures will become mandatory for all communication.
-:::
+>#### Note
+>It is currently possible to send BAPI requests without signature by turning the “signature required” option off for your account. (See Account settings -> Business API settings)
+>However this will change in the future and signatures will become mandatory for all communication.
+
 
 # Group Customer resource
 These operations are available on the customer resource
@@ -194,9 +203,9 @@ To create external digital signage or clienteling solutions, you can get the cur
 current users who are in proximity of defined locations. You can use a polling mechanism and use this 
 resource at a maximum rate of 1 time(s) per 30 seconds.
 
-:::note
-It is also possible to use the actual_proximity_update notification which does not need polling. (To be defined)
-:::
+>#### Note
+>It is also possible to use the actual_proximity_update notification which does not need polling. (To be defined)
+
 
 
 ## Get actual proxmity on all locations [/bapi/v1/proximity/actual/{?client,signature}]
@@ -269,3 +278,52 @@ Get actual proximity status of a single location with `locationId`
 
 + Response 404 (application/json)
 
+# Group outbound notifications
+## Trigger update [/your/defined/endpoint/{?clientID}]
+trigger update
+A trigger update service is send as notification that a user has triggered a special defined triggerflow element. You can define outbound trigger update notifications by using the following line in your trigger flow definition:
+
+When the trigger is fired, a trigger update notification is send to you. 
+Depending on the process value, the result that is returned determines whether the trigger is executed (trigger flow continutes) or not.
+
++ Parameters
+    + client: `ID` (string, required) - Account client-id
+
+### Trigger notification [POST]
+
++ Request (application/json)
+    + Send an updated customer object, which only contains values to update or to delete. 
+    + Body
+        {
+            “service”:”triggerupdate”,
+            “customer”: {
+                “id”: 956,
+                “device_id”:”AN223a137a2f1ec163”,
+                “customerid”: “33434JB3”,
+                “email”: “dwight.schulz@ateam.com”,
+                “IDFA”:”B9407F30-F5F8-466E-AFF9-25556B57FE6D”
+                “friend”: {
+                    “email”: “mr-t@ateam.com”,
+                    “name”: “Mr T”
+                }
+            },
+            “trigger”: {
+                “id”: 7234,
+                “name”: “binnenkomst winkel”,
+                “trigtype”: “enterlocation”,
+                “location”: “WVS Kalverstraat”
+            }
+        }
+
++ Response 200 (application/json)
+
+    + Body
+        {
+            “result”:”NOK”,
+            “update”: {
+                “customer”: {
+                    “emailsend”:true
+                }
+            }
+        }
++
