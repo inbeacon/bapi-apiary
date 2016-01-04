@@ -1,9 +1,13 @@
 FORMAT: 1A
-HOST: https://test.inbeacon.nl
+HOST: https://bapi.inbeacon.nl
 
 # inBeacon BAPI 
-Integrating inBeacon with your own local systems is possible using the inBeacon 
-Business API. The inBeacon BAPI is one of serveral API drivers you can choose from in your account. Each BAPI driver uses its own special interface definitions, for communicating with a specific system. The inBeacon BAPI is a generic driver that offers an API that you can develop against.
+Welcome to the inBeacon Business API reference! This inBeacon API is based on REST.
+
+This documentation lists and describes the individual resources you can used to manipulate objects 
+on the inBeacon Platform. 
+
+If you are new to APIs, review the info in this section.
 
 
 # Getting started
@@ -11,9 +15,9 @@ Business API. The inBeacon BAPI is one of serveral API drivers you can choose fr
 ## messages and notifications
 The inBeacon BAPI supports *inbound* and *outbound* messages, always from the viewpoint of the inBeacon service. So calling the inBeacon endpoints is defined as *inbound*. If your own notification endpoint is called, this is defined as an *outbound* message. 
 
-:::note
-In order to process *outbound* messages you need to setup your own service endpoint
-:::
+>#### Note
+>In order to process *outbound* messages you need to setup your own service endpoint
+
 
 ## Configuration
 Go to [Manage->account configuration](https://console.inbeacon.nl/accmgr/settings)  to set up your interface:
@@ -24,7 +28,7 @@ Go to [Manage->account configuration](https://console.inbeacon.nl/accmgr/setting
 - Enter your service endpoint where the inBeacon BAPI driver can send *outbound* notifications to. (optional)
 - Enter a service username/password to be used for *outbound* messages to your service endpoint using Basic HTTP Authentication. (optional)  
 
-<aside class="notice">Note: Use a https protocol together with Basic HTTP authentication for security reasons.</aside>
+>Note: Use a https protocol together with Basic HTTP authentication for security reasons.
 
 In addition you need your account client ID and secret to talk to the inBeacon endpoint.
 Go to [Manage->account](https://console.inbeacon.nl/accmgr) to look for the clientID and clientSecret under “developer credentials”
@@ -32,10 +36,10 @@ Go to [Manage->account](https://console.inbeacon.nl/accmgr) to look for the clie
 When your developer account for inBeacon is created, you will receive a client-ID and a client-SECRET.
 You must include your client ID in all API requests. Your client ID identifies you as an inBeacon customer and enables support and quota for your application. All API requests also must include a generated unique signature that you need to calculate. These signatures are based on your client-SECRET. This client-SECRET is yours alone and unique to your client ID. 
 
-:::warning
-#### <i class="fa fa-warning"></i> Caution
-Please keep your `client-SECRET` secure. This key — though used to generate the signature — should not be passed within any requests, stored on any websites, or posted to any public forum. Anyone obtaining this signing key "in the clear" could spoof requests using your identity.
-:::
+
+>#### Caution
+>Please keep your `client-SECRET` secure. This key — though used to generate the signature — should not be passed within any requests, stored on any websites, or posted to any public forum. Anyone obtaining this signing key "in the clear" could spoof requests using your identity.
+
 
 ## Usage Limits
 The inBeacon BAPI has the following limits in place:
