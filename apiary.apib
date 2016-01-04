@@ -360,15 +360,22 @@ Get actual proximity status of a single location with `locationId`
 + Response 404 (application/json)
 
 # Group Outbound notifications
-## Trigger update [/ https://your/defined/endpoint]
-trigger update
-A trigger update service is send as notification that a user has triggered a special defined triggerflow element. You can define outbound trigger update notifications by using the following line in your trigger flow definition:
+## Trigger update [/ https://your/defined/endpoint{?client}]
+
+A trigger update service is send as notification that a user has triggered a special defined triggerflow element. 
+You can define outbound trigger update notifications by using a BAPI context in your trigger flow designer.
 
 When the trigger is fired, a trigger update notification is send to you. 
 Depending on the process value, the result that is returned determines whether the trigger is executed (trigger flow continutes) or not.
 
 + Parameters
     + client: `ID` (string, required) - Account client-id
+
++ Attributes (object)
+    + service: `triggerupdate` (string, required) - fixed notifiction identifier
+    + customer: `{"name":"jean"...}` (object, required) - Customer object
+    + trigger: `{"id":"455", "name":"shop entry"...}` (object, required) - Trigger object
+
 
 ### Trigger notification [POST]
 
@@ -397,6 +404,9 @@ Depending on the process value, the result that is returned determines whether t
         }
 
 + Response 200 (application/json)
+    + Attributes (object)
+        + result: `OK|NOK` (enum[string], required) - fixed notifiction identifier. OK = continue processing, NOK = stop processing.
+        + update: `{}` (object, required) - Update object, update values of resources. Can be used to update or add attributes to customer object
 
     + Body
         {
