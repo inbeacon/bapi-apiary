@@ -200,6 +200,10 @@ Get customer information of customer {id}, which is the inBeacon internal ID
 
 ### Get customer by id [GET]
 
++ Request (application/json)
+    + Headers
+        Accept: application/json
+
 + Response 200 (application/json)
 
     + Body
@@ -226,7 +230,10 @@ Search a customer by name, email and/or customerid. Multiple values combine into
 
 
 ### Search customers [GET]
-
++ Request (application/json)
+    + Headers
+        Accept: application/json
+        
 + Response 200 (application/json)
 
     + Body
@@ -267,7 +274,8 @@ Update information of customer `id`, which is the inBeacon internal ID.
         {
         "friend": "Jan Paulusma"
         }
-
+    + Headers
+        Accept: application/json
 + Response 200 (application/json)
 + Response 401 (application/json)
     + no object data found
@@ -299,6 +307,10 @@ Get actual proximity status of all locations
 
 ### Get all proximity [GET]
 
++ Request (application/json)
+    + Headers
+        Accept: application/json
+        
 + Response 200 (application/json)
 
     + Body
@@ -311,6 +323,14 @@ Get actual proximity status of all locations
 
 + Response 404 (application/json)
 
++ Response 401 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Illegal client-ID",
+          "code": 401
+        }
+
 ## Get actual proxmity on location [/bapi/v1/proximity/actual/{locationId}{?client,signature}]
 Get actual proximity status of a single location with `locationId`
 
@@ -321,6 +341,10 @@ Get actual proximity status of a single location with `locationId`
 
 ### Get location proximity [GET]
 
++ Request (application/json)
+    + Headers
+        Accept: application/json
+        
 + Response 200 (application/json)
 
     + Body
@@ -359,6 +383,14 @@ Get actual proximity status of a single location with `locationId`
 
 + Response 404 (application/json)
 
++ Response 401 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Illegal client-ID",
+          "code": 401
+        }
+        
 # Group Outbound notifications
 ## Trigger update [/ https://your/defined/endpoint{?client}]
 
