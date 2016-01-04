@@ -363,46 +363,9 @@ http://api.inbeacon.nl/bapi/v1/user/5445?client=CLIENT_ID&signature={calculated 
 
 Signature example
 
-pseudocode example
-```
-    # Encode a string to URL-safe base64
-    function encodeBase64UrlSafe(value) {
-        base64=base64_encode(value);
-        base64.string_replace('+','-');   # replace 'illegal' url chars
-        base64.string_replace('/','_');   # + and / become - and _
-        base64.string_right_trim(‘=’);    # remove trailing =
-        return base64;
-    }
-    
-    # Decode a string from URL-safe base64
-    function decodeBase64UrlSafe(value) {
-        value.string_replace(‘-’,’+’);        # replace - and _
-        value.string_replace(‘_’,’/’);        # back to original base64 characters
-        // should pad to make length a multiple of 4 with ‘=’ if decode cant handle
-        return base64_decode(value);
-    }
-    
-    # resource= API resource to call
-    # parameters = parameters to add (including client)
-    # privatekey = private key
-    urlPartToSign = “/bapi/v1/”+resource+”?”+parameters;
-    
-    # for POST requests only
-    postValue = ‘[{“json”:”data”}]’;
-    
-    # Decode the private key into its binary format
-    decodedKey = decodeBase64UrlSafe(privateKey);
-    
-    # Create a signature using the private key and the URL-encoded
-    # string using HMAC SHA1. This signature will be binary.
-    signature = hmac_sha1_calculate(urlPartToSign+postValue, decodedKey);
-    
-    encodedSignature = encodeBase64UrlSafe(signature);
-    
-    finalURL=”http://api.inbeacon.nl”+urlPartToSign+"&signature="+encodedSignature;
-    
-    PHP example
-    
+
+PHP example
+```php
     function base64url_encode($data) {
       return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
