@@ -215,8 +215,21 @@ Get customer information of customer {id}, which is the inBeacon internal ID
         }
 
 + Response 404 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Not found",
+          "code": 404
+        }
 
-
++ Response 401 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Illegal client-ID",
+          "code": 401
+        }
+        
 
 ## Search customers [/bapi/v1/customers{?name,email,customerid,client,signature}]
 Search a customer by name, email and/or customerid. Multiple values combine into an AND request. May contain % to indicate wildcards.
@@ -235,9 +248,7 @@ Search a customer by name, email and/or customerid. Multiple values combine into
         Accept: application/json
         
 + Response 200 (application/json)
-
     + Body
-
         [{
             "id": "41",
             "device_id": "dbseed",
@@ -250,7 +261,23 @@ Search a customer by name, email and/or customerid. Multiple values combine into
             "name": "Hans Anders",
             "email": "hans@gmail.com",
         }]
+
++ Response 404 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Not found",
+          "code": 404
+        }
+
 + Response 401 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Illegal client-ID",
+          "code": 401
+        }
+       
 
 ## Update a customer [/bapi/v1/customers/{id}{?client,signature}]
 
@@ -277,14 +304,32 @@ Update information of customer `id`, which is the inBeacon internal ID.
     + Headers
         Accept: application/json
 + Response 200 (application/json)
-+ Response 401 (application/json)
-    + no object data found
-    + Body
 
++ Response 400 (application/json)
+    + Illegal JSON
+    + Body
+        {
+          "error": true,
+          "message": "Error: cant parse JSON data",
+          "code": 400
+        }
++ Response 401 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Illegal client-ID",
+          "code": 401
+        }
+        
 + Response 404 (application/json)
     + object not found (id does not exist)
     + Body
-
+        {
+          "error": true,
+          "message": "Error: Object not found",
+          "code": 404
+        }
+        
 # Group Proximity resource
 The proximity resource contains devices in a defined proximity range. This can be historic or actual.
 
@@ -321,8 +366,6 @@ Get actual proximity status of all locations
             "email": "mieke.boudewijn@gmail.com",
         }
 
-+ Response 404 (application/json)
-
 + Response 401 (application/json)
     + Body
         {
@@ -330,6 +373,7 @@ Get actual proximity status of all locations
           "message": "Illegal client-ID",
           "code": 401
         }
+       
 
 ## Get actual proxmity on location [/bapi/v1/proximity/actual/{locationId}{?client,signature}]
 Get actual proximity status of a single location with `locationId`
@@ -381,7 +425,14 @@ Get actual proximity status of a single location with `locationId`
             },
         ]
 
+
 + Response 404 (application/json)
+    + Body
+        {
+          "error": true,
+          "message": "Not found",
+          "code": 404
+        }
 
 + Response 401 (application/json)
     + Body
@@ -390,7 +441,8 @@ Get actual proximity status of a single location with `locationId`
           "message": "Illegal client-ID",
           "code": 401
         }
-        
+       
+
 # Group Outbound notifications
 ## Trigger update [/ https://your/defined/endpoint{?client}]
 
