@@ -514,7 +514,7 @@ For efficiency reasons, multiple proximity updates can be send to you at once.
 
 + Attributes (object)
     + service: `proximityupdate` (string, required) - fixed notifiction identifier
-    + list: List of proximityevents
+    + events: List of proximityevents 
 
 
 ### Proximity notification [POST]
@@ -524,7 +524,7 @@ For efficiency reasons, multiple proximity updates can be send to you at once.
     + Body
         {
             “service”:”proximityupdate”,
-            "list": [ 
+            "events": [ 
                 {
                     "id": "22A6BA25-D9C7-4AD9-9B2C-544BBBCF2CBA",
                     "timestamp": "YYYY-MM-DDThh:mm:ssTZD",
