@@ -444,7 +444,7 @@ Get actual proximity status of a single location with `locationId`
        
 
 # Group Outbound notifications
-## Trigger update [/ https://your/defined/endpoint{?client}]
+## Trigger update [/to: https://your/defined/endpoint{?client}]
 
 A trigger update service is send as notification that a user has triggered a special defined triggerflow element. 
 You can define outbound trigger update notifications by using a BAPI context in your trigger flow designer.
@@ -502,7 +502,7 @@ Depending on the process value, the result that is returned determines whether t
             }
         }
 
-## Proximity update [/ https://your/defined/endpoint{?client}]
+## Proximity update [/to- https://your/defined/endpoint{?client}]
 
 A proximity update is send when a smartphone enters or leaves a proximity. 
 
@@ -514,9 +514,7 @@ For efficiency reasons, multiple proximity updates can be send to you at once.
 
 + Attributes (object)
     + service: `proximityupdate` (string, required) - fixed notifiction identifier
-    + proximity: `{"io":"in"...}` (object, required) - proximity object
-    + touchpoint: `{"id":455, "name":"B4423"...}` (object, required) - Beacon or other touchpoint object
-    + device: `{"id":"4423", .... }` (object, required) - Device object
+    + list: List of proximityevents
 
 
 ### Proximity notification [POST]
@@ -526,38 +524,55 @@ For efficiency reasons, multiple proximity updates can be send to you at once.
     + Body
         {
             “service”:”proximityupdate”,
-            "list": [
-                “event”: {
+            "list": [ 
+                {
                     "id": "22A6BA25-D9C7-4AD9-9B2C-544BBBCF2CBA",
-                    “io": "in",
-                    "range": "far",
                     "timestamp": "YYYY-MM-DDThh:mm:ssTZD",
-                },
-                “touchpoint”: {
-                    “id”: 7234,
-                    “name”: “B344”,
-                    "owner": "CCE",
-                    "ibeacon": {
-                        “UUID”: “4B4B2A3E-D766-4E9D-8DAF-B2653A187678”,
-                        "major": 34,
-                        "minor": 3
+                    “event”: {
+                        “io": "in",
+                        "range": "far",
+                    },
+                    “touchpoint”: {
+                        “id”: 7234,
+                        “name”: “B344”,
+                        "owner": "InfraCompany",
+                        "tags": [ 'AMSTERDAM','1023EE','BEACONMILE' ],
+                        "ibeacon": {
+                            “UUID”: “4B4B2A3E-D766-4E9D-8DAF-B2653A187678”,
+                            "major": 34,
+                            "minor": 3,
+                            "supplierid": "xUYa43AS",
+                            "manufacturer": "kontakt.io",
+                        }
+                        “coordinate": {
+                            "lat": 34.556,
+                            "lng": 3.45,
+                            "street": "Bentheimstraat 23",
+                            "zip": "4555 HA",
+                            "city": "Brontheim",
+                            "country": "NL"
+                        }
+                    },
+                    “device”: {
+                        “id”: 956,
+                        “installid”:”AN223a137a2f1ec163”,
+                        "appid": "34YD6324",
+                        "hardware":"iPhone5,2",
+                        "locale": "en-GB",
+                        "osversion": "9.2.1",
+                        "os": "iOS",
+                        "services":{ "notification":"on", "location":"on", "bluetooth":"on", "idfa": "on" },
+                        “IDFA”:”B9407F30-F5F8-466E-AFF9-25556B57FE6D”,
                     }
-                    “coordinate": {
-                        "lat": 34.556,
-                        "lng": 3.45
+                    "user": {
+                        “customerid”: 3412123,
+                        “email”: “dwight.schulz@ateam.com”,
+                        "name": "dwight Schulz",
+                        "gender": "male",
                     }
-                    "address": {
-                        "name
-                },
-                “device”: {
-                    “id”: 956,
-                    “device_id”:”AN223a137a2f1ec163”,
-                    “customerid”: “33434JB3”,
-                    “email”: “dwight.schulz@ateam.com”,
-                    “IDFA”:”B9407F30-F5F8-466E-AFF9-25556B57FE6D”,
-                    "name": "dwight Schulz"
-                },
-            ]
+                }
+            ],
+            [...]
         }
 
 + Response 200 (application/json)
