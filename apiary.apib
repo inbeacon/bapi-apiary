@@ -502,3 +502,77 @@ Depending on the process value, the result that is returned determines whether t
             }
         }
 
+## Proximity update [/ https://your/defined/endpoint{?client}]
+
+A proximity update is send when a smartphone enters or leaves a proximity. 
+
+If this update is switched on, a notification is send to you for every proximity action of any device. 
+For efficiency reasons, multiple proximity updates can be send to you at once.
+
++ Parameters
+    + client: `ID` (string, required) - Account client-id
+
++ Attributes (object)
+    + service: `proximityupdate` (string, required) - fixed notifiction identifier
+    + proximity: `{"io":"in"...}` (object, required) - proximity object
+    + touchpoint: `{"id":455, "name":"B4423"...}` (object, required) - Beacon or other touchpoint object
+    + device: `{"id":"4423", .... }` (object, required) - Device object
+
+
+### Proximity notification [POST]
+
++ Request (application/json)
+    + This is notification is send to your endpoint
+    + Body
+        {
+            “service”:”proximityupdate”,
+            "list": [
+                “event”: {
+                    "id": "22A6BA25-D9C7-4AD9-9B2C-544BBBCF2CBA",
+                    “io": "in",
+                    "range": "far",
+                    "timestamp": "YYYY-MM-DDThh:mm:ssTZD",
+                },
+                “touchpoint”: {
+                    “id”: 7234,
+                    “name”: “B344”,
+                    "owner": "CCE",
+                    "ibeacon": {
+                        “UUID”: “4B4B2A3E-D766-4E9D-8DAF-B2653A187678”,
+                        "major": 34,
+                        "minor": 3
+                    }
+                    “coordinate": {
+                        "lat": 34.556,
+                        "lng": 3.45
+                    }
+                    "address": {
+                        "name
+                },
+                “device”: {
+                    “id”: 956,
+                    “device_id”:”AN223a137a2f1ec163”,
+                    “customerid”: “33434JB3”,
+                    “email”: “dwight.schulz@ateam.com”,
+                    “IDFA”:”B9407F30-F5F8-466E-AFF9-25556B57FE6D”,
+                    "name": "dwight Schulz"
+                },
+            ]
+        }
+
++ Response 200 (application/json)
+    + Attributes (object)
+        + result: `OK` (enum[string], required) - fixed notifiction identifier. OK = all ok.
+        + update: `{}` (object, optional) - Update object, update values of resources. Can be used to update or add attributes to customer object
+
+    + Body
+        {
+            “result”:”OK”,
+            “update”: {
+                “customer”: {
+                    “emailsend”:true
+                }
+            }
+        }
+
+
